@@ -1,0 +1,99 @@
+\documentclass[a4paper]{article}
+
+\def\nbook {All of Statistics: A Concise Course in Statistical Inference}
+\def\nbookshort {All of Statistics}
+
+% Shared preamble. The fallback lets the document build whether the working
+% directory is its own folder or the project root.
+\IfFileExists{header.tex}{\input{header}}{\input{../header}}
+
+\begin{document}
+\maketitle
+
+\section{Chapter 6: Models, Statistical Inference and Learning}
+% QUESTION 1
+\qs{6.6.1}{Let \(X_{1}, \dots, X_{n} \sim \Poisson(\lambda)\) and let \(\widehat{\lambda} = n^{-1} \sum_{i=1}^{n} X_{i}\). Find the \(\bias\), \(\se\), and \(\mse\) of this estimator.}
+
+The \(\bias \), \( \se \), and \(\mse \) are given by
+
+\begin{align*}
+	\textsf{bias}(\widehat{\lambda}) &= \E(\widehat{\lambda}) - \lambda \\
+		& = \E\left( \frac{1}{n} \sum_{i=1}^{n} X_{i} \right) - \lambda \\
+		& = \frac{1}{n} \sum_{i=1}^{n} \E\left( X_{i} \right) - \lambda \\
+		& = \frac{1}{n} \left( n \lambda  \right) - \lambda \\
+		& = \boxed{0} \\
+	\var\left( \widehat{\lambda } \right) & = \var\left( \frac{1}{n} \sum_{i=1}^{n} X_{i} \right) \\
+		& = \frac{1}{n^{2}} \sum_{i=1}^{n} \var\left( X_{i} \right) \\
+		& = \frac{1}{n^{2}} \left( n \lambda  \right) \\
+		& = \frac{\lambda }{n} \\
+	\se \left( \widehat{\lambda } \right) & = \boxed{\sqrt{\lambda / n}} \\
+	\mse & = \bias^{2} \left( \widehat{\lambda } \right) + \var\left( \widehat{\lambda } \right) \\
+		& = 0 + \lambda / n \\
+		& = \boxed{\lambda / n}
+\end{align*}
+
+% QUESTION 2
+\qs{6.6.2}{Let \(X_{1}, \dots, X_{n} \sim \Uniform(0,\theta)\) and let \(\widehat{\theta} = \max \{ X_{1,},\dots,X_{n} \} \). Find the \(\bias \), \(\se \), and \(\mse\) of this estimator.}
+
+Note that \(\widehat{\theta} \le \alpha \) if and only if \(X_{i} \le \alpha \) for all \(i = 1, \dots, n\). First we derive the \textsf{CDF}:
+\[
+	F_{\widehat{\theta}}\left( \alpha  \right) = \Prob\left( \widehat{\theta} \le \alpha  \right) = \prod_{i=1}^{n} \int^{\alpha }_{0} \frac{1}{\theta} \ dx = \left( \frac{\alpha }{\theta} \right)^{n} 
+\]
+
+Differentiating gives us the \textsf{PDF}:
+\[
+	f_{\widehat{\theta}}\left( \alpha  \right) = \frac{n}{\theta^{n}} \alpha^{n-1}
+\]
+Now we derive the \(\bias \):
+\begin{align*}
+	\bias \left( \widehat{\theta} \right)  & = \E\left( \widehat{\theta} \right) - \theta \\
+	 & = \int^{\theta}_{0} \frac{n}{\theta^{n}} \alpha^{n} \ d \alpha - \theta \\ 
+	 & = \boxed{\theta \left( \frac{n}{n+1} - 1 \right)}
+\end{align*} 
+
+Observe that
+\[
+	\lim_{n \to \infty} \bias \left( \widehat{\theta} \right) = \lim_{n \to \infty} \theta \left( \frac{n}{n+1} - 1 \right) = 0
+\]
+The variance and \(\se\):
+\begin{align*}
+	\var\left( \widehat{\theta} \right) & = \int^{\theta}_{0} \frac{n}{\theta^{n}} \alpha^{n+1} \ d \alpha - \theta^{2} \left( \frac{n}{n+1} \right)^{2}  \\
+	 & \theta^{2} \left( \frac{n}{\left( n + 2 \right) \left( n + 1 \right)^{2}} \right)  \\
+	\se \left( \widehat{\theta} \right) & = \boxed{\theta \left( \frac{n}{\left( n + 2 \right) \left( n + 1 \right)^{2}} \right)^{1/2}}
+\end{align*}
+Again taking the limit, we find
+\[
+	\lim_{n \to \infty} \se \left( \widehat{\theta} \right) = \lim_{n \to \infty} \theta \left( \frac{n}{\left( n + 2 \right) \left( n + 1 \right)^{2}} \right)^{1/2} = 0
+\]
+
+Lastly, the \(\mse \):
+\begin{align*}
+	\mse  & = \bias^{2} \left( \widehat{\theta} \right) + \var\left( \widehat{\theta} \right) \\
+	 & = \left( \theta \left( \frac{n}{n+1} - 1 \right)  \right)^{2} + \theta \left( \frac{n}{\left( n + 2 \right) \left( n + 1 \right)^{2}} \right)  \\ 
+	 & = \boxed{\theta^{2} \left( \frac{2n + 2}{\left( n + 2 \right) \left( n + 1 \right)^{2}} \right) }
+\end{align*}
+with limit
+\[
+	\lim_{n \to \infty} \mse = \lim_{n \to \infty} \theta^{2} \left( \frac{2n + 2}{\left( n + 2 \right) \left( n + 1 \right)^{2}} \right) = 0
+\]
+
+% QUESTION 3
+\qs{6.6.3}{Let \(X_{1},\dots, X_{n} \sim \Uniform(0,\theta)\) and let \(\widehat{\theta} = 2 \overline{X}_{n}\). Find the \(\bias\), \(\se\), and \(\mse\) of this estimator.}
+
+Calculate the \(\bias \), \(\se \), and \(\mse \) as:
+\begin{align*}
+	\bias \left( \widehat{\theta} \right)  & = \E\left( \widehat{\theta} \right) - \theta \\
+	 & \E\left( 2 \overline{X}_{n} \right) - \theta \\ 
+	 & = 2 \E\left( \frac{1}{n} \sum_{i=1}^{n} X_{i} \right) - \theta \\
+	 & = 2 \left( \frac{\theta}{2} \right) - \theta \\
+	 & = \boxed{0} \\
+	\var\left( \widehat{\theta} \right) & = \var\left( 2 \overline{X}_{n} \right) = 4 \var\left( \overline{X}_{n} \right) \\
+	 & = 4 \var\left( \frac{1}{n} \sum_{i=1}^{n} X_{i} \right) \\
+	 & = \frac{\theta^{2}}{3n} \\
+	\se \left( \widehat{\theta} \right) & = \boxed{\theta / \sqrt{3n}} \\
+	\mse & = \bias^{2} \left( \widehat{\theta} \right) + \var\left( \widehat{\theta} \right) \\
+	 & = 0 + \theta^{2} / 3n \\
+	 & = \boxed{\theta^{2} / 3n}
+\end{align*}
+
+\end{document}

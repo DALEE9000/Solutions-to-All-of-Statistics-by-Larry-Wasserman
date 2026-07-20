@@ -1,0 +1,144 @@
+\documentclass[a4paper]{article}
+
+\def\nbook {All of Statistics: A Concise Course in Statistical Inference}
+\def\nbookshort {All of Statistics}
+
+% Shared preamble. The fallback lets the document build whether the working
+% directory is its own folder or the project root.
+\IfFileExists{header.tex}{\input{header}}{\input{../header}}
+
+\begin{document}
+\maketitle
+
+\section{Chapter 8: The Bootstrap}
+
+% QUESTION 1
+\qs{8.6.1}{Consider the data in Example 8.6. Find the plug-in estimate of the correlation coefficient. Estimate the standard error using the bootstrap. Find a 95 percent confidence interval using the Normal, pivotal, and percentile methods.}
+
+We plot the LSAT and GPA data as follows:
+
+\begin{center}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex1i.eps}
+\end{center}
+
+And  calculate the plug-in estimate of the correlation as \(0.7764\). For \(B = 1000\) number of samples, we bootstrap the correlation, which has  standard error \(0.1387\). This gives us for the confidence intervals 
+
+\renewcommand{\arraystretch}{2}
+\begin{center}
+\begin{tabular}{|c|c|}
+	\hline
+	Normal & \(\left( 0.5045, 1.0482 \right) \) \\
+	\hline
+	Pivotal & \(\left( 0.5944, 1.1100 \right) \) \\
+	\hline
+	Percentile & \(\left( 0.4428, 0.9583 \right) \) \\
+	\hline
+\end{tabular}
+\end{center}
+
+\begin{python}
+est = pearsonr(LSAT, GPA)[0]
+
+b = len(LSAT)
+B = 1000
+
+def bootstrap():
+        bootstrapsamples = []
+        for i in range(0,B):
+            pairsample = choices(list(zip(LSAT,GPA)), k=b) 
+            pairsample_unzip = list(zip(*pairsample))
+            corrbootsample = pearsonr(pairsample_unzip[0], 
+	    		     pairsample_unzip[1])[0]
+            bootstrapsamples.append(corrbootsample)
+        return bootstrapsamples;
+
+sampleboot = bootstrap()
+
+seboot = np.std(sampleboot)
+
+normci = (est - 1.96*seboot, est + 1.96*seboot)
+pivotalci = (2*est - np.quantile(sampleboot, 0.975), 
+	     2*est - np.quantile(sampleboot, 0.025))
+percentileci = (np.quantile(sampleboot, 0.025), 
+		np.quantile(sampleboot, 0.975))
+\end{python}
+
+\begin{center}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex1ii.eps}
+\end{center}
+
+% QUESTION 2
+\qs{8.6.2}{\textsf{(Computer Experiment.)} Conduct a simulation to compare the various bootstrap confidence interval methods. Let \(n = 50\) and let \(T \left( F \right) = \int \left( x - \mu  \right)^{3} \ dF \left( X \right) /\sigma^{3}\) be the skewness. Draw \(Y_{1}, \cdots, Y_{n} \sim N \left( 0,1 \right) \) and set \(X_{i} = e^{Y_{i}}, i = 1, \cdots, n\). Construct the three types of bootstrap 95 percent intervals for \(T \left( F \right) \) from the data \(X_{1}, \cdots, X_{n}\). Repeat this whole thing many times and estimate the true coverage of the three intervals.}
+
+On visual inspection, the distribution of our exponentiated normal sample is extraordinarily skewed.
+
+\begin{center}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex2expnormal.eps}
+\end{center}
+
+Empirically calculating the skew from a sample size of \(10^{8}\) produces values between \(6.1\) and \(6.2\). To bootstrap the skew over many iterations, as well as examining what ensues when we increase the size of the sample (from \(n = 50\)), we implement multiprocessing to conscript more CPUs to assist in the computation.
+
+For each of the three confidence interval, we first repeat the sampling for the bootstraps \(N\) times, tabulate the standard error and construct the confidence interval, check if the true skew of distribution lies within the confidence interval, and calculate the coverage. In the second graph, we hold the number of repetitions at \(R = 100\), and instead calculate the coverage as it grows from \(N = 10\) to \(N = 1000\) samples. The relevant code is located in the chapter GitHub repo folder. 
+
+\vspace{-3pt}
+\begin{center}
+\setlength{\lineskip}{-1pt}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex2normal.eps}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex2pivotal.eps}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex2percentile.eps}
+\end{center}
+
+% QUESTION 3
+\qs{8.6.3}{Let
+\[
+	X_{1}, \cdots, X_{n} \sim t_{3}
+\]
+where \(n = 25\). Let \(\theta = T \left( F \right) = \left( q_{.75} - q_{.25} \right) / 1.34\) where \(q_{p}\) denotes the \(p^{th}\) quantile. Do a simulation to compare the coverage and length of the following confidence intervals for \(\theta\):
+
+\begin{enumerate}[]
+	\item Normal interval with standard error from the bootstrap,
+	\item bootstrap percentile interval, and
+	\item pivotal bootstrap interval.
+\end{enumerate}}
+
+\begin{center}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex3tdistribution.eps}
+\end{center}
+
+\begin{center}
+\includegraphics[width=1.0\textwidth]{chap8/chap8ex3.eps}
+\end{center}
+
+% QUESTION 4
+\qs{8.6.4}{Let \(X_{1}, \dots, X_{n}\) be distinct observations (no ties). Show that there are
+\[
+	\binom{2n-1}{n}
+\]
+distinct bootstrap samples.
+
+Hint: Imagine putting \(n\) balls into \(n\) buckets.}
+\begin{proof}[Proof] 
+First, let us establish some conceptual points to clarify the hint. Suppose we have three unique observations \(X_{1}, X_{2}, X_{3}\). Then we gather our bootstrap samples, obtained \textit{with} replacement. The set of all samples we can get is (using shorthand to denote that the first, second, and third digits in the sequence correspond to \(X^{*}_{1}, X^{*}_{2}, X^{*}_{3}\) equal to the first, second, or third observation):
+\[
+	\begin{tabular}{c c c}
+		111 & 112 & 123 \\
+		222 & 113 &  \\
+		333 & 221 &  \\
+		 & 223 &  \\
+		 & 331 &  \\
+		 & 332 &  \\
+	\end{tabular}
+\]
+Now, consider 3 (identical) balls with 3 bins. One way we could place the balls in the bins is to put all of them in bin 1. Or two in bin 1, and one in bin 2. One in each bin is also an option. In other words, the combinatorial problem of how to place \(n\) balls in \(n\) bins is precisely the equivalent conundrum to resolve. The three bootstrap samples are the balls, and the specific choice of observation (\(X_{1}, X_{2}, X_{3}\)) are analogous to the choice of bin.
+
+Developing the combinatorial theory to complete the proof is beyond the scope here.\footnote{See \textit{Combinatorics: Discrete Mathematics and its Applications}, Nicholas A. Loehr} In short, the number of ways to fit \(k\) identical balls into \(n\) bins labeled \(1, \dots, n\) is
+\[
+	\binom{k + n - 1}{k} = \frac{\left( k + n - 1 \right)!}{k! \left( n-1 \right)!}
+\]
+For \(k = n\) balls, we have
+\[
+	\binom{2n - 1}{n} = \frac{\left( 2n-1 \right)!}{n! \left( n-1 \right)!}
+\]
+\end{proof}
+
+\end{document}

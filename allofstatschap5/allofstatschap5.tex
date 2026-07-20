@@ -1,0 +1,485 @@
+\documentclass[a4paper]{article}
+
+\def\nbook {All of Statistics: A Concise Course in Statistical Inference}
+\def\nbookshort {All of Statistics}
+
+% Shared preamble. The fallback lets the document build whether the working
+% directory is its own folder or the project root.
+\IfFileExists{header.tex}{\input{header}}{\input{../header}}
+
+\begin{document}
+\maketitle
+
+\section{Chapter 5: Convergence of Random Variables}
+
+% QUESTION 1
+\qs{5.8.1}{Let \(X_{1}, \dots, X_{n}\) be \textsf{IID} with finite mean \(\mu = \E\left( X_{1} \right)\) and finite variance \(\sigma^{2} = \var\left( X_{1} \right)\). Let \(\overline{X}_{n}\) be the sample mean and let \(S^{2}_{n}\) be the sample variance.
+
+\begin{enumerate}[label=(\alph*)]
+	\item Show that \(\E\left( S^{2}_{n} \right) = \sigma^{2}\).
+	\item Show that \(S^{2}_{n} \xrightarrow{\text{ P }} \sigma^{2}\). Hint: Show that \(S^{2}_{n} = c_{n} n^{-1} \sum_{i=1}^{n} X^{2}_{i} - d_{n} \overline{X}^{2}_{n}\) where \(c_{n} \rightarrow 1\) and \(d_{n} \rightarrow 1\). Apply the law of large numbers to \(n^{-1} \sum_{i=1}^{n} X^{2}_{i}\) and to \(\overline{X}_{n}\). Then use part (d) of Theorem 5.5.
+\end{enumerate}}
+\begin{proof}[Proof] 
+\par (a) See exercise 3.8.8, which provides a proof of Theorem 3.17.
+\vspace{12pt}
+\par (b) Using the hint, we can write \(S^{2}_{n}\) as
+\begin{align*}
+	S^{2}_{n} & = \frac{1}{n-1} \sum_{i=1}^{n} \left( X_{i} - \overline{X}_{n} \right)^{2} \\
+	 & = \frac{1}{n-1} \sum_{i=1}^{n} \left( X^{2}_{i} - 2X_{i} \overline{X}_{n} + \overline{X}^{2}_{n} \right)  \\ 
+	 & = \frac{1}{n-1} \sum_{i=1}^{n} X^{2}_{i} - \frac{n}{n-1} \overline{X}^{2}_{n} \\
+	 & = c_{n} \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} - d_{n} \overline{X}^{2}_{n}
+\end{align*}
+where \(c_{n} = d_{n} = \frac{n}{n-1} \rightarrow 1\) as \(n \rightarrow \infty\).
+
+By WLLN, \(\overline{X}_{n} \xrightarrow{\text{ P }} \mu \). By Theorem 5.5(f), \(\overline{X}^{2}_{n} \xrightarrow{\text{ P }} \mu^{2}\). 
+
+For the \(\frac{1}{n} \sum_{i=1}^{n} X^{2}_{n}\) term, the task is to determine if \(X^{2}_{1}, \dots, X^{2}_{n}\) are \textsf{IID}. Recall from exercise 2.14.10 that if \(X \sqcup Y\), and if \(g, h\) are functions, then \(g \left( X \right) \sqcup h \left( Y \right) \). Therefore, for \(X_{i}, X_{j}\) such that \(i \neq j\), we must have \(X^{2}_{i} \sqcup X^{2}_{j}\). Since the \(X_{i}\)'s come from identical distributions, so must the \(X^{2}_{i}\)'s.
+
+Thus, since \(\E\left( X^{2}_{1} \right) = \sigma^{2} + \mu^{2}\), by WLLN, \(\frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \xrightarrow{\text{ P }} \sigma^{2} + \mu^{2}\). Ergo, applying Theorem 5.5(d) to the products \(c_{n} \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i}\) and \(d_{n} \overline{X}^{2}_{n}\), we find
+\[
+	S^{2}_{n} = c_{n} \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} - d_{n} \overline{X}^{2}_{n} \xrightarrow{\text{ P }} \sigma^{2} + \mu^{2} - \mu^{2} = \sigma^{2}
+\]
+\end{proof}
+
+\newpage
+% QUESTION 2
+\qs{5.8.2}{Let \(X_{1}, X_{2}, \dots \) be a sequence of random variables. Show that \(X_{n} \xrightarrow{\text{qm}} b\) if and only if
+\[
+	\lim_{n \to \infty} \E\left( X_{n} \right) = b \quad \text{and}\quad \lim_{n \to \infty} \var\left( X_{n} \right) = 0.
+\]}
+
+\begin{proof}[Proof] 
+\(\left( \implies \right)\)  Let \(X_{n} \xrightarrow{\text{qm}} b\). Then \(\E\left( X_{n} - b \right)^{2} \rightarrow 0\). By Theorem 5.17(b), we also have that \(X_{n}\) converges in \(L_{1}\) to \(b\):
+\[
+	\E\left| X_{n} - b \right| \rightarrow 0
+\]
+If \(X_{n} - b \ge 0\), then \(\E\left|X_{n} - b \right| = \E\left( X_{n} - b \right)\), and 
+\[
+	\lim_{n \to \infty} \E\left( X_{n} - b \right) = \lim_{n \to \infty} \E\left( X_{n} \right) - b = 0 \implies \lim_{n \to \infty} \E\left( X_{n} \right) = b
+\]
+
+Otherwise, \(\E\left| X_{n} - b \right| = \E\left( -\left( X_{n} - b \right)  \right)\), and 
+\[
+	\lim_{n \to \infty} \E\left( - \left( X_{n} - b \right)  \right) = 0 \implies \lim_{n \to \infty} \E\left( X_{n} - b \right) \implies \lim_{n \to \infty} \E\left( X_{n} \right) = b
+\] 
+
+as before.
+
+Thus we must have \(\lim_{n \to \infty}  \E\left( X_{n} \right) = b\) in either case. Combining this fact and the premise, it must follow that
+\begin{align*}
+	\lim_{n \to \infty} \E\left( X_{n} - b \right)^{2} & = \lim_{n \to \infty} \E\left( X^{2}_{n} - 2bX_{n} + b^{2} \right) \\
+	& = \lim_{n \to \infty} \E\left( X^{2}_{n} \right) - 2b \lim_{n \to \infty} \E\left( X_{n} \right) + b^{2} \\
+	& = \lim_{n \to \infty} \E\left( X^{2}_{n} \right) - 2 \lim_{n \to \infty} \E\left( X_{n} \right)^{2} + \lim_{n \to \infty} \E\left( X_{n} \right)^{2} \\
+	& = \lim_{n \to \infty} \left[ \E\left( X^{2}_{n} \right) - \E\left( X_{n} \right)^{2} \right] \\
+	& = \lim_{n \to \infty} \E\left( X_{n} - \E\left( X_{n} \right) \right)^{2} \\
+	& = \lim_{n \to \infty} \var\left( X_{n} \right) \\
+	& = 0
+\end{align*}
+
+\(\left( \impliedby \right) \) In the converse direction, let
+\[
+	\lim_{n \to \infty} \E\left( X_{n} \right) = b \qquad \lim_{n \to \infty} \var\left( X_{n} \right) = 0
+\]
+Then 
+\begin{align*}
+	\lim_{n \to \infty} \var\left( X_{n} \right) & = \lim_{n \to \infty} \E\left( X_{n} - \E\left( X_{n} \right) \right)^{2}  \\
+	& = \lim_{n \to \infty} \E\left( X^{2}_{n} - 2 X_{n} \E\left( X_{n} \right) + \E\left( X_{n} \right)^{2} \right) \\
+	& = \lim_{n \to \infty} \E\left( X^{2}_{n} \right) - 2 \lim_{n \to \infty} \E\left( X_{n} \right)^{2} + \lim_{n \to \infty} \E\left( X_{n} \right)^{2} \\
+	& = \lim_{n \to \infty} \E\left( X^{2}_{n} \right) - b^{2} \\
+	& = \lim_{n \to \infty} \E\left( X_{n} - b \right)^{2} \\
+	& = 0
+\end{align*}
+implies \(X_{n} \xrightarrow{\text{qm}} b\).
+\end{proof}
+
+% QUESTION 3
+\qs{5.8.3}{Let \(X_{1}, \dots, X_{n}\) be \textsf{IID} and let \(\mu = \E\left( X_{1} \right)\). Suppose that the variance is finite. Show that \(\overline{X}_{n} \xrightarrow{\text{qm}} \mu \).}
+\begin{proof}[Proof] 
+Since \(\E\left( \overline{X}_{n} \right) = \mu \) and \(\var\left( \overline{X}_{n} \right) = \sigma^{2} / n\), observe that
+\begin{align*}
+	\lim_{n \to \infty} \E\left( \overline{X}_{n} \right) & = \lim_{n \to \infty} \mu = \mu  \\
+	\lim_{n \to \infty} \var\left( \overline{X}_{n} \right) & = \lim_{n \to \infty} \frac{\sigma^{2}}{n} = 0 \\ 
+\end{align*}
+By exercise 5.8.2, \(\overline{X}_{n} \xrightarrow{\text{qm}} \mu \).
+\end{proof}
+
+% QUESTION 4
+\qs{5.8.4}{Let \(X_{1}, X_{2}, \dots\) be a sequence of random variables such that
+\[
+	\Prob\left( X_{n} = \frac{1}{n} \right) = 1 - \frac{1}{n^{2}} \quad \text{and} \quad \Prob\left( X_{n} = n \right) = \frac{1}{n^{2}}.
+\]
+Does \(X_{n}\) converge in probability? Does \(X_{n}\) converge in quadratic mean?}
+
+By the errata, note that \(n \ge 2\).
+
+\underline{Conjecture:} \(X_{n} \xrightarrow{\text{ P }} 0 \)
+
+\begin{proof}[Proof] 
+Observe that \(\lim_{n \to \infty} \Prob\left( \abs{X_{n}} > \epsilon  \right) = \Prob\left( n > \epsilon \text{ or } \frac{1}{n} > \epsilon  \right)\). Then by mutual exclusivity:
+\begin{align*}
+	 & = \lim_{n \to \infty} \Prob\left( n > \epsilon  \right)\Prob\left( X_{n} = n \right) + \lim_{n \to \infty} \Prob\left( \frac{1}{n} > \epsilon  \right) \Prob\left( X_{n} = \frac{1}{n} \right) \\
+	 & = \lim_{n \to \infty} \Prob\left( n > \epsilon  \right) \frac{1}{n^{2}} + \lim_{n \to \infty} \Prob\left( \frac{1}{n} > \epsilon  \right) \left( 1 - \frac{1}{n^{2}} \right)  \\ 
+	 & = \lim_{n \to \infty} \Prob\left( \frac{1}{n} > \epsilon  \right) \\
+	 & = 0
+\end{align*}
+Thus \(X_{n} \xrightarrow{\text{ P }} 0\).
+\end{proof}
+
+\underline{Conjecture:} \(X_{n} \xrightarrow{\text{qm}} X\)
+
+\begin{proof}[Proof] 
+Suppose \(X_{n}\) converges in quadratic mean to \(X\). Then we have
+\begin{align*}
+	\E\left( X_{n} - X \right)^{2} & = \E\left( X^{2}_{n} - 2X_{n}X + X^{2} \right) \\
+	 & = \E\left( X^{2}_{n} \right) - 2 \E\left( X_{n}X \right) + \E\left( X^{2} \right) \\
+	 & = \frac{1}{n^{2}} \left( 1 - \frac{1}{n^{2}} \right) + n^{2} \left( \frac{1}{n^{2}} \right) \\
+	 & \qquad - 2 \left( \frac{1}{n} \E\left( X \right) \left( 1 - \frac{1}{n^{2}} \right) + n \E\left( X \right) \left( \frac{1}{n^{2}} \right)  \right) + \E\left( X^{2} \right) \\
+\end{align*}
+Now take the limit for large \(n\) to find
+\[
+	\lim_{n \to \infty} \E\left( X_{n} - X \right)^{2} = 1 + \E\left( X^{2} \right)
+\]
+Now, by our initial assumption, we must have
+\[
+	1 + \E\left( X^{2} \right) = 0
+\]
+But this is impossible, as it would require \(\E\left( X^{2} \right) = -1\), which can never be the case since \(\var\left( X \right) \ge 0\). So \(X_{n} \centernot{\xrightarrow{\text{qm}}} X\) for any \(X\).
+\end{proof}
+
+% QUESTION 5
+\qs{5.8.5}{Let \(X_{1}, \dots, X_{n} \sim \Bernoulli\left( p \right)\). Prove that
+\[
+	\frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \xrightarrow{\text{ P }} p \quad \text{and} \quad \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \xrightarrow{\text{qm}} p.
+\]}
+\begin{proof}[Proof] 
+First we prove that \(\frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \xrightarrow{\text{qm}} p\). The expectation and mean are
+\begin{align*}
+	\E\left( \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \right) & = \frac{1}{n} \sum_{i=1}^{n} \E\left( X^{2}_{i} \right) \\
+	 & = \frac{1}{n} np \\ 
+	 & = p \\
+	\var\left( \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \right) & = \frac{1}{n^{2}} \sum_{i=1}^{n} \var\left( X^{2}_{i} \right) \\
+	 & = \frac{1}{n} \left[ \E\left( X^{4}_{i} \right) - \E\left( X^{2}_{i} \right)^{2} \right] \\
+	 & = \frac{1}{n} \left( p - p^{2} \right) 
+\end{align*}
+So we ascertain that 
+\[
+	\E\left( \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} - p \right)^{2} = \var\left( \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \right)
+\]
+and that the remaining task is to prove the variance vanishes in the limit:
+\[
+	\lim_{n \to \infty} \var\left( \frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \right) = \lim_{n \to \infty} \frac{1}{n} \left( p - p^{2} \right) = 0
+\]
+Thus \(\frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \xrightarrow{\text{qm}} p \). By Theorem 5.4(a), it immediately follows that \(\frac{1}{n} \sum_{i=1}^{n} X^{2}_{i} \xrightarrow{\text{ P }} p\).
+\end{proof}
+
+% QUESTION 6
+\qs{5.8.6}{Suppose that the height of men has mean 68 inches and standard deviation 2.6 inches. We draw 100 men at random. Find (approximately) the probability that the average height of men in our sample will be at least 72 inches.}
+
+Note that the errata is for 72 inches.
+
+For \(Z \sim N \left( 0,1 \right) \), by the Central Limit Theorem:
+
+\begin{align*}
+	\Prob\left( \overline{X}_{n} > 72 \right) & = \Prob\left( \frac{\sqrt{100} \left( \overline{X}_{n} - 68  \right) }{2.6} > \frac{\sqrt{100} \left( 72 - 68 \right) }{2.6} \right) \\
+	 & \approx \Prob\left( 10 Z > 15.38 \right) \\ 
+	 & = \Prob\left( Z > 1.538 \right) \\
+	 & \approx \boxed{0.062}
+\end{align*}
+
+% QUESTION 7
+\qs{5.8.7}{Let \(\lambda_{n} = 1/n\) for \(n = 1, 2, \dots \). Let \(X_{n} \sim \Poisson\left( \lambda_{n} \right)\).
+\begin{enumerate}[label=(\alph*)]
+	\item Show that \(X_{n} \xrightarrow{\text{ P }} 0\).
+	\item Let \(Y_{n} = n X_{n}\). Show that \(Y_{n} \xrightarrow{\text{P}} 0\).
+\end{enumerate}}
+\begin{proof}[Proof] 
+(a) Observe that
+\[
+	\lim_{n \to \infty} \E\left( X^{2}_{n} \right) = \lim_{n \to \infty} \var\left( X_{n} \right) + \E\left( X_{n} \right)^{2} = \lim_{n \to \infty} \frac{1}{n} + \frac{1}{n^{2}} = 0
+\]
+which implies \(X_{n} \xrightarrow{\text{qm}} 0 \), and by Theorem 5.4(a), we have \(X_{n} \xrightarrow{\text{ P }} 0\).
+\vspace{12pt}
+\par (b) By Theorem 5.5(f), if \(Y_{n} = g \left( X_{n} \right) = n X_{n}\), then \(X_{n} \xrightarrow{\text{ P }} 0 \implies g \left( X_{n} \right) \xrightarrow{\text{ P }} g \left( 0 \right) \implies Y_{n} \xrightarrow{\text{ P }} 0 \).	 
+\end{proof}
+
+\newpage
+% QUESTION 8
+\qs{5.8.8}{Suppose we have a computer program consisting of \(n = 100\) pages of code. Let \(X_{i}\) be the number of errors on the \(i^{th}\) page of code. Suppose that the \(X_{i}\)'s are Poisson with mean 1 and that they are independent. Let \(Y = \sum_{i=1}^{n} X_{i}\) be the total number of errors. Use the central limit theorem to approximate \(\Prob\left( Y < 90 \right)\).}
+
+By the Central Limit Theorem, \(n \overline{X}_{n} \approx N \left( n \mu, n \sigma^{2} \right) \). Then calculate
+\[
+	\Prob\left( Y < 90 \right) = \Prob\left( \frac{n \overline{X}_{n} - n \mu }{\sqrt{n \sigma^{2}}} < \frac{90 - \left( 100 \right) \left( 1 \right) }{\sqrt{100 \cdot1}} \right) = \Prob\left( Z < -1 \right) \approx \boxed{0.1587}
+\]
+
+% QUESTION 9
+\qs{5.8.9}{Suppose that \(\Prob\left( X = 1  \right) = \Prob\left( X = -1 \right) = 1/2\). Define
+\[
+	X_{n} = \begin{cases}
+		X & \text{with probability } 1 - \frac{1}{n} \\
+		e^{n} & \text{with probability } \frac{1}{n}. \\
+	\end{cases}
+\]
+Does \(X_{n}\) converge to \(X\) in probability? Does \(X_{n}\) converge to \(X\) in distribution? Does \(\E\left( X - X_{n} \right)^{2}\) converge to 0?}
+\begin{proof}[Proof] 
+First we determine if \(X_{n}\) converges to \(X\) in quadratic mean. Observe that
+\begin{align*}
+	\E\left( X_{n} - X \right)^{2} = \E\left( X - X_{n} \right)^{2} 	& = \E\left( X^{2} - 2 X X_{n} + X^{2}_{n} \right) \\	
+	 & = \E\left( X^{2} \right) - 2 \E\left( X X_{n} \right) + \E\left( X^{2}_{n} \right) \\ 
+\end{align*}
+Calculating each of the expectations yields
+\begin{align*}
+	\E\left( X^{2} \right) & = \left( 1 \right)^{2} \left( \frac{1}{2} \right) + \left( -1 \right)^{2}  \\
+	\E\left( X^{2}_{n} \right) & = \E\left( X^{2}_{n} \mid X = 1 \right) \Prob\left( X = 1 \right) + \E\left( X^{2}_{n} \mid X = -1 \right) \Prob\left( X = -1 \right) \\
+		   & = \left( \left( 1 \right)^{2} \left( 1 - \frac{1}{n} \right) + e^{2n} \left( \frac{1}{n} \right)  \right) \cdot \frac{1}{2} \\
+		   & \qquad + \left( \left( -1 \right)^{2} \left( 1 - \frac{1}{n} \right) + e^{2n} \left( \frac{1}{n} \right)  \right) \cdot \frac{1}{2} \\
+	\E\left( X X_{n} \right) & = \E\left( X X_{n} \mid X = 1 \right) \Prob\left( X = 1 \right) + \E\left( X X_{n} \mid X = -1 \right) \Prob\left( X = -1 \right) \\
+	 & = \left( \left( 1 \right)^{2} \left( 1 - \frac{1}{n} \right) + \left( 1 \right) e^{n} \left( \frac{1}{n} \right)  \right) \cdot \frac{1}{2} \\
+	 & \qquad + \left( \left( -1 \right)^{2} \left( 1 - \frac{1}{n} \right)  + \left( -1 \right) e^{n} \left( \frac{1}{n} \right)  \right) \cdot \frac{1}{2} \\
+	 & = 1 - \frac{1}{n} \\
+	\E\left( X - X_{n} \right)^{2} & = 1 - 2 \left( 1 - \frac{1}{n} \right) + 1 + \frac{1}{n} \left( e^{2n} - 1 \right) \\
+	 & = \frac{e^{2n}}{n}
+\end{align*}
+
+Since \(\lim_{n \to \infty} \E\left( X - X_{n} \right)^{2} = \lim_{n \to \infty} \frac{e^{2n}}{n} \neq 0 \), we have \(X_{n} \centernot{\xrightarrow{\text{qm}}} X \). 
+
+Now we investigate if \(X_{n} \xrightarrow{\text{ P }} X\):
+\begin{align*}
+	\Prob\left( \abs{X_{n} - X} > \epsilon  \right) & = \Prob\left( 0 > \epsilon \mid X_{n} = X \right) \Prob\left( X_{n} = X \right) \\
+	 & \qquad + \Prob\left( e^{n} - X > \epsilon \mid X_{n} = e^{n} \right) \Prob\left( X_{n} = e^{n} \right) \\
+	 & = \Prob\left( e^{n} - X > \epsilon \mid X_{n} = e^{n} \right) \cdot \frac{1}{n} \\ 
+\end{align*}
+
+Taking the limit, we get
+\[
+	\lim_{n \to \infty} \Prob\left( \abs{X_{n} - X} > \epsilon  \right) = \lim_{n \to \infty} \Prob\left( e^{n} - X > \epsilon \mid X_{n} = e^{n} \right) \cdot \frac{1}{n} = 0
+\]
+proving that \(X_{n} \xrightarrow{\text{ P }} X\), and by Theorem 5.4(b), \(X_{n} \rightsquigarrow X\).
+\end{proof}
+
+\newpage
+% QUESTION 10	
+\qs{5.8.10}{Let \(Z \sim N \left( 0,1 \right)\). Let \(t > 0\). Show that, for any \(k > 0\),
+\[
+	\Prob\left( \abs{Z} > t \right) \le \frac{\E \abs{Z}^{k}}{t^{k}}
+\]
+Compare this to Mill's inequality in Chapter 4.}
+
+\begin{proof}[Proof] 
+By Markov's inequality,
+\[
+	\Prob\left( \abs{Z} > t \right) = \Prob\left( \abs{Z}^{k} > t^{k} \right) \le \frac{\E \abs{Z}^{k}}{t^{k}}
+\]
+\end{proof}
+
+% QUESTION 11
+\qs{5.8.11}{Suppose that \(X_{n} \sim N \left( 0,1/n \right) \) and let \(X\) be a random variable with distribution \(F\left( x \right) = 0\) if \(x < 0\) and \(F\left( x \right) = 1\) if \(x \ge 0\). Does \(X_{n}\) converge to \(X\) in probability? (Prove or disprove). Does \(X_{n}\) converge to \(X\) in distribution? (Prove or disprove).}
+
+\begin{proof}[Proof] 
+We have \(X \sim F\) where \(F\left( x \right)\) is defined as:
+\[
+	F\left( x \right) = \begin{cases}
+		0 & x < 0 \\
+		1 & x \ge 0 \\
+	\end{cases}
+\]
+which is the Heaviside function. Meanwhile, \(X_{n}\) has \textsf{PDF}
+\[
+	f_{n}\left( x_{n} \right) = \sqrt{\frac{n}{2 \pi }} \exp\left( -\frac{x^{2}_{n} n}{2} \right)
+\]
+As \(n \rightarrow 0\), \(\lim_{n \to \infty} f_{n}\left( x_{n} \right) = 0\) when \(x_{n} \neq 0\). At \(x_{n} = 0\), \(\lim_{n \to \infty} f_{n}\left( x_{n} \right)\) diverges to infinity. In other words, this is the Dirac delta function:
+\[
+	\lim_{n \to \infty} f_{n}\left( x_{n} \right) = \delta \left( x \right) = \begin{cases}
+		+\infty & x = 0 \\
+		0 & x \neq 0 \\
+	\end{cases} 
+\]
+Then it follows that the distribution
+\begin{align*}
+	F_{n}\left( t \right) & = \sqrt{\frac{n}{2 \pi }} \int^{t}_{-\infty} \exp\left( -\frac{x^{2}_{n} n}{2} \right) \ dx_{n}   \\ 
+\end{align*}
+tends toward
+\[
+	\lim_{n \to \infty} F_{n} \left( t \right)  = \int^{t}_{-\infty} \delta \left( x \right)  \ dx = \begin{cases}
+		0 & t < 0 \\
+		1 & t \ge 0 \\
+	\end{cases} 
+\]
+Thus we have
+\[
+	\lim_{n \to \infty} F_{n}\left( t \right) = F \left( t \right) \quad \implies \quad X_{n} \rightsquigarrow X
+\]
+Next, since \(F \left( x \right) \) is the Heaviside function, \(X\) must also have a Dirac delta \textsf{PDF} (there are nuances here with respect to Lebesgue integrability but that is outside the scope of this textbook). We examine if \(X_{n}\) converges to \(X\) in \(L_{1}\), assuming \(X_{n} - X \ge 0\) (we will get the same result with \(X_{n} - X < 0\) anyhow):
+\begin{align*}
+	\lim_{n \to \infty} \E \abs{X_{n} - X} & = \lim_{n \to \infty} \E\left( X_{n} - X \right) = \lim_{n \to \infty} \left( \E\left( X_{n} \right) - \E\left( X \right) \right)  \\
+	 & = \lim_{n \to \infty} \int^{\infty}_{-\infty} x_{n} \sqrt{\frac{n}{2 \pi }} \exp\left( -\frac{x^{2}_{n} n }{2} \right) \ dx_{n} - \int^{\infty}_{-\infty} x \delta \left( x \right)  \ dx   \\
+	 & = \int^{\infty}_{-\infty} x' \delta \left( x' \right)  \ dx'- \int^{\infty}_{-\infty} x \delta \left( x \right)  \ dx \\
+	 & = 0
+\end{align*}
+This proves that \(X_{n} \xrightarrow{L_{1}} X\), which implies \(X_{n} \xrightarrow{\text{ P }} X\).
+\end{proof}
+
+% QUESTION 12
+\qs{5.8.12}{Let \(X, X_{1}, X_{2}, X_{3}, \dots \) be random variables that are positive and integer valued. Show that \(X_{n} \rightsquigarrow X\) if and only if
+\[
+	\lim_{n \to \infty} \Prob\left( X_{n} = k \right) = \Prob\left( X = k \right)
+\]
+for every integer \(k\).}
+\begin{proof}[Proof] 
+\(\left( \implies \right)\) Let \(X_{n} \rightsquigarrow X\). Then
+\[
+	\lim_{n \to \infty} F_{n}\left( k \right) = F\left( k \right)
+\]
+where \(F_{n}\left( k \right) = \Prob\left( X_{n} \le k \right)\) and \(F \left( t \right) = \Prob\left( X \le k \right)\) for any positive integer \(k\). Beginning from \(k = 1\), we must have
+\[
+	\lim_{n \to \infty} \Prob\left( X_{n} \le 1 \right) = \lim_{n \to \infty} \Prob\left( X_{n} = 1 \right) = \Prob\left( X \le 1 \right) = \Prob\left( X = 1 \right)
+\]
+Then for \(k=2\),
+\[
+	\lim_{n \to \infty} \Prob\left( X_{n} \le 2 \right) = \Prob\left( X \le 2 \right)
+\]
+which implies that \(\lim_{n \to \infty} \Prob\left( X_{n} = 2 \right) = \Prob\left( X = 2 \right)\), as we ascertained that \(\lim_{n \to \infty} \Prob\left( X_{n} = 1 \right) = \Prob\left( X = 1 \right)\). We can continue in this fashion to conclude
+\[
+	\lim_{n \to \infty} \Prob\left( X_{n} = k \right) = \Prob\left( X = k \right)
+\]
+\(\left( \impliedby \right) \) Let \(\lim_{n \to \infty} \Prob\left( X_{n} = k \right) = \Prob\left( X = k \right)\) for every positive integer \(k\). If we observe that
+\begin{align*}
+	\lim_{n \to \infty} \Prob\left( X_{n} \le k \right) & = \lim_{n \to \infty} \sum_{i=1}^{k} \Prob\left( X_{n} = i \right) \\
+	\Prob\left( X \le k \right) & = \sum_{i=1}^{k} \Prob\left( X \le i \right) \\ 
+\end{align*}
+Then we can conclude
+\[
+	\lim_{n \to \infty} \Prob\left( X_{n} \le k \right) = \Prob\left( X \le k \right)
+\]
+which is equivalent to claiming
+\[
+	\lim_{n \to \infty} F_{n}\left( k \right) = F \left( k \right) \quad \implies \quad X_{n} \rightsquigarrow X
+\]
+\end{proof}
+
+% QUESTION 13
+\qs{5.8.13}{Let \(Z_{1}, Z_{2}, \dots \) be \textsf{IID} random variables with density \(f\). Suppose that \(\Prob\left( Z_{i} > 0 \right) = 1\) and that \(\lambda = \lim_{x \downarrow 0} f \left( x \right) > 0\). Let
+\[
+	X_{n} = n \min\{Z_{1}, \dots, Z_{n}\}.
+\]
+Show that \(X_{n} \rightsquigarrow Z\) where \(Z\) has an exponential distribution with mean \(1 / \lambda \).}
+
+\begin{proof}[Proof] 
+First, recall that the \textsf{CDF} of \(Z \sim \exp\left( 1 / \lambda  \right)\) is
+\[
+	F \left( t \right) = \int^{t}_{0} \lambda \exp\left( -\lambda x \right) \ dx = 1 - \exp\left( -\lambda t \right) 
+\]
+Here's our intuition: does \(\Prob\left( X_{n} \le t \right)\) follow a pattern that allows us to derive an exponential function by way of a limit?
+
+For \(X_{n} \le t\), we must have \(\min\{Z_{1}, \dots, Z_{n}\} \le t/n\). To guarantee this is the case, we must guarantee that \textit{all} the \(Z_{i} \le t/n\) for all \(i\). Then since the random variables are \textsf{IID}, it follows that
+\begin{align*}
+	\Prob\left( X_{n} \le t \right) & = \prod^{n} \Prob\left( Z_{i} \le \frac{t}{n} \right) \\
+			& = 1 - \prod^{n} \Prob\left( Z_{i} \ge \frac{t}{n} \right) \\
+			& = 1 - \prod^{n} \left( \Prob\left( Z_{i} > 0 \right) - \Prob\left( Z_{i} \le \frac{t}{n} \right) \right)  \\
+			& = 1 - \prod^{n} \left( 1 - \Prob\left( Z_{i} \le \frac{t}{n} \right) \right)   
+\end{align*}
+Now, for \(n \rightarrow \infty\), for fixed \(t\), \(t/n \rightarrow 0 \). By premise, \(\lim_{x \downarrow 0} f \left( x \right) = \lambda \). For infinitesimal \(t/n\), we can approximate \(\Prob\left( Z_{i} \le t/n \right) = \int^{t/n}_{0} f \ dz_{i} \) as follows:
+\[
+	\lim_{n \to \infty} \Prob\left( Z_{i} \le \frac{t}{n} \right) = \lim_{n \to \infty} \int^{t/n}_{0} f \ dz_{i} = \frac{\lambda t}{n} 
+\]
+where we can think of \(f \approx \lambda \) and \(\Delta z_{i} \approx t/n\). Now we can finish with
+\begin{align*}
+	\lim_{n \to \infty} F_{n}\left( t \right) & = \lim_{n \to \infty} \Prob\left( X_{n} \le t \right) \\
+	 & = 1 - \lim_{n \to \infty} \prod^{n} \left( 1 - \Prob\left( Z_{i}\le \frac{t}{n} \right) \right)    \\ 
+	 & = 1 - \lim_{n \to \infty} \prod^{n} \left( 1 - \frac{\lambda t}{n} \right) \\
+	 & = 1 - \lim_{n \to \infty} \left( 1 - \frac{\lambda t}{n} \right)^{n} \\
+	 & = 1 - \exp\left( -\lambda t \right) \\
+	 & = F \left( t \right) 
+\end{align*}
+\end{proof}
+
+% QUESTION 14
+\qs{5.8.14}{Let \(X_{1}, \dots, X_{n} \sim \Uniform\left( 0,1 \right)\). Let \(Y_{n} = \overline{X}^{2}_{n}\). Find the limiting distribution of \(Y_{n}\).}
+Recall that for \(X_{1} \sim \Uniform\left( 0,1 \right)\), \(\E\left( X_{1} = 1/2 \right)\) and \(\var\left( X_{1} \right) = 1/12\). Then \(\E\left( \overline{X}_{n} \right) = 1/2\) and \(\var\left( \overline{X}_{n} \right) = 1/12n\). By Theorem 5.13 (the Delta Method), since \(\overline{X}_{n} \approx N \left( 1/2, 1/12n \right)\), we have
+\[
+	Y_{n} = \overline{X}^{2}_{n} \approx N \left( \frac{1}{4}, \frac{1}{12n} \right) 
+\]
+
+% QUESTION 15
+\qs{5.8.15}{Let
+\[
+	\begin{pmatrix}
+		X_{11} \\
+		X_{21} \\
+	\end{pmatrix},
+	\begin{pmatrix}
+		X_{12} \\
+		X_{22} \\
+	\end{pmatrix},
+	\dots,
+	\begin{pmatrix}
+		X_{1n} \\
+		X_{2n} \\
+	\end{pmatrix}
+\]
+be \textsf{IID} random vectors with mean \(\mu = \left( \mu_{1}, \mu_{2} \right) \) and variance \(\Sigma \). Let
+\[
+	\overline{X}_{1} = \frac{1}{n} \sum_{i=1}^{n} X_{1i}, \quad \overline{X}_{2} = \frac{1}{n} \sum_{i=1}^{n} X_{2i}
+\]
+and define \(Y_{n} = \overline{X}_{1} / \overline{X}_{2}\). Find the limiting distribution of \(Y_{n}\).}
+
+Let \(Y_{n} = g \left( \overline{X}_{1}, \overline{X}_{2} \right) \) where \(g \left( s_{1}, s_{2} \right) = s_{1}/s_{2}\). The gradient is
+\[
+	\nabla g \left( s \right) = 
+	\begin{pmatrix}
+		\frac{\partial g}{\partial s_{1}}  \\
+		\frac{\partial g}{\partial s_{2}}  \\
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+		\frac{1}{s_{2}} \\
+		-\frac{s_{1}}{s^{2}_{2}} \\
+	\end{pmatrix}
+\]
+
+Then by the multivariate Delta Method,
+\begin{align*}
+	\nabla^{T}_{\mu } \Sigma \nabla_{\mu } & = 
+	\begin{pmatrix}
+		1 / \mu_{2} & - \mu_{1} / \mu^{2}_{2} \\
+	\end{pmatrix}
+	\begin{pmatrix}
+		\sigma_{11} & \sigma_{12} \\
+		\sigma_{12} & \sigma_{22} \\
+	\end{pmatrix}
+	\begin{pmatrix}
+		1 / \mu_{2} \\
+		- \mu_{1} / \mu^{2}_{2} \\
+	\end{pmatrix} \\
+	& =
+	\begin{pmatrix}
+		\frac{\sigma_{11}}{\mu_{2}} - \frac{\mu_{1} \sigma_{12}}{\mu^{2}_{2}} & \frac{\sigma_{12}}{\mu_{2}} - \frac{\mu_{1} \sigma_{22}}{\mu^{2}_{2}} \\
+	\end{pmatrix}
+	\begin{pmatrix}
+		1 / \mu_{2} \\
+		-\mu_{1} / \mu^{2}_{2} \\
+	\end{pmatrix} \\
+	& = \frac{\sigma_{11}}{\mu^{2}_{2}} - \frac{2 \mu_{1} \sigma_{12}}{\mu^{3}_{2}} + \frac{\mu^{2}_{1} \sigma_{22}}{\mu^{4}_{2}}
+\end{align*}
+
+Thus we can conclude
+\[
+	\sqrt{n} \left( \frac{\overline{X}_{1}}{\overline{X}_{2}} - \frac{\mu_{1}}{\mu_{2}} \right) \rightsquigarrow N \left( 0, \frac{\sigma_{11}}{\mu^{2}_{2}} - \frac{2 \mu_{1} \sigma_{12}}{\mu^{3}_{2}} + \frac{\mu^{2}_{1} \sigma_{22}}{\mu^{4}_{2}} \right) 
+\]
+
+% QUESTION 16
+\qs{5.8.16}{Construct an example where \(X_{n} \rightsquigarrow X\) and \(Y_{n} \rightsquigarrow Y\) but \(X_{n} + Y_{n}\) does not converge in distribution to \(X + Y\).}
+
+Define \(X, Y \sim N \left( 0,1 \right) \), \(X_{n} = X\), \(Y_{n} = -X\), \(Z = X + Y\), and \(Z_{n} = X_{n} + Y_{n}\). It follows that \(Z \sim N \left( 0,2 \right) \). Moreover, we satisfy the premise that \(X_{n} \rightsquigarrow X\) and \(Y_{n} \rightsquigarrow Y\); it is trivial in the former case, and for the latter, simply observe that 
+\[
+	f_{X}\left( -x \right) = \frac{1}{\sqrt{2 \pi }} \exp\left( -\frac{\left( -x \right)^{2}}{2} \right) = \frac{1}{\sqrt{2 \pi }} \exp\left( -\frac{x^{2}}{2} \right) = f_{X}\left( x \right)
+\]
+Since \(Z_{n} = X_{n} + Y_{n} = 0\) is a constant random variable, its distribution is
+\[
+	F_{n}\left( Z_{n} \right) = \begin{cases}
+		0 & Z_{n} < 0  \\
+		1 & Z_{n} \ge 0 \\
+	\end{cases}
+\]
+demonstrating that \(Z_{n} \not\rightsquigarrow Z\).
+
+\end{document}
