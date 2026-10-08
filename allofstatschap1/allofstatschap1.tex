@@ -16,14 +16,6 @@
 
 Please see the associated GitHub repo for all code and comments to simulations. [LINK HERE]
 
-\begin{python}
-import numpy as np
-from numpy.random import choice
-import random
-import matplotlib.pyplot as plt
-import scienceplots
-\end{python}
-
 % QUESTION 1
 \qs{1.10.1}{\textsf{Fill in the details of the proof of Theorem 1.8. Also, prove the monotone decreasing case.}}
 \thm{(Wasserman 1.8) (Continuity of Probabilities)}{If \(A_{n} \rightarrow A\) then 
@@ -179,35 +171,6 @@ Descriptively, the sample space \(S\) is the set of events where the first head 
 \]
 The reasoning is that since the second head is fixed on the \(k\)-th toss, there are \(k-1\) tosses for the first head to be flipped. We simulate the coin toss experiment below:
 
-\begin{python}
-def cointoss(): 
-    tosses, heads = [], 0
-    while (heads < 2):
-        flip = random.randint(0,1)
-        if (flip == 0):
-            tosses.append('Heads')
-            heads = tosses.count('Heads')
-        else:
-            tosses.append('Tails')
-    return len(tosses)
-
-def empirical(n): 
-    numtosses, probs = [], []
-    for i in range(0,n):
-        numtosses.append(cointoss())
-    for x in np.unique(numtosses): 
-        probs.append((x, numtosses.count(x)/n))
-    return probs
-
-def theoretical(): 
-    probs = []
-    for i in range(2,24):
-        probs.append((i, (i-1)*(0.5)**i))
-    return probs
-
-n = 5000
-\end{python}
-
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex5.eps}
 \end{center}
@@ -359,45 +322,6 @@ An analogous calculation for the switching conditional probability gives us
 \]
 Lastly, there is a famous anecdote of Erd{\"o}s refusing to accept the result of the Monty Hall problem until examining a simulation of the game. You may find yourself burdened by a similar sentiment. Indeed, the experimental result aligns with our derivations above:
 
-\begin{python}
-def montyhallswitch(): 
-    doors = list(range(2, 4))
-    prizedoor = random.randint(1,3)
-    if (prizedoor == 2 or prizedoor == 3): 
-        montydoors = [x for x in doors if x != prizedoor]
-        montypicks = montydoors[0]
-    else:
-        montypicks = random.randint(2,3) 
-    doors.remove(montypicks)
-    yourswitch = doors[0]
-    return(prizedoor == yourswitch)
-
-def montyhallhold(): 
-    prizedoor = random.randint(1,3)
-    return(prizedoor == 1)
-
-def iterationswitch(n): 
-    runs = []
-    for i in range(1,n+1):
-        runs.append(montyhallswitch())
-    probs = runs.count(True)/(n+1)
-    return probs
-
-def iterationhold(n): 
-    runs = []
-    for i in range(1,n+1):
-        runs.append(montyhallhold())
-    probs = runs.count(True)/(n+1)
-    return probs
-
-n = 5000
-trials = list(range(10, n+1, 5)) 
-switchprob, holdprob = [], []
-for i in trials: 
-    switchprob.append(iterationswitch(i))
-    holdprob.append(iterationhold(i))
-\end{python}
-
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex10.eps}
 \end{center}
@@ -450,32 +374,6 @@ Let \(GG, RR, GR\) correspond to the first, second, and third cards. Using Bayes
 
 Simulating the card game, we find that the empirical outcome agrees with our theoretical result.
 
-\begin{python}
-def cardgame(): 
-    first, second, third = ('G','G'), ('R','R'), ('G','R')
-    mychoice = random.choice([first, second, third])
-    myside = random.choice(mychoice)
-    if (myside == 'G' and 'R' not in mychoice):
-        return(True, True) 
-    elif (myside == 'G' and 'R' in mychoice):
-        return(True, False) 
-    else:
-        return(False, False) 
-    
-def iteration(n): 
-    runs = []
-    for i in range(1,n+1):
-        runs.append(cardgame())
-    probs = runs.count((True, True))/
-    	(runs.count((True, True)) + runs.count((True, False)))
-    return probs
-
-n=2500
-games = list(range(10, n+1))
-cardprob = []
-for i in games: 
-    cardprob.append(iteration(i))
-\end{python}
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex12}
 \end{center}
@@ -501,29 +399,6 @@ for i in games:
 
 By simulation, we can observe the empirical probability of three tosses aligns with the theoretical result, as well as the probabilities for other numbers of tosses:
 
-\begin{python}
-def cointoss(): 
-    tosses, heads, tails = [], 0, 0
-    while (heads < 1 or tails < 1):
-        flip = random.randint(0,1)
-        if (flip == 0):
-            tosses.append('Heads')
-            heads = tosses.count('Heads')
-        else:
-            tosses.append('Tails')
-            tails = tosses.count('Tails')
-    return len(tosses)
-
-def empirical(n): 
-    numtosses, probs = [], []
-    for i in range(0,n):
-        numtosses.append(cointoss())
-    for x in np.unique(numtosses): 
-        probs.append((x, numtosses.count(x)/n))
-    return probs
-
-n = 5000
-\end{python}
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex13}
 \end{center}
@@ -652,30 +527,6 @@ Apply Bayes' Theorem for all parts.
 
 Empirical simulation:
 
-\begin{python}
-def coinselect():
-  coin = random.randint(1,5)
-  return coin
-
-def coinprob(i):
-  coinface = ['H', 'T']
-  headsprob=[0, 0.25, 0.5, 0.75, 1]
-  randomFace = choice( 
-    coinface, 1, p=[headsprob[i-1], 1-headsprob[i-1]])
-  return randomFace[0], i
-
-def iteration(n):
-  sample, probs = [], []
-  for i in range(1,n):
-    sample.append(coinprob(coinselect()))
-  heads = len([i for i in sample if 'H' in i])
-  for i in list(range(1,6)):
-    probs.append(sample.count(('H',i)) / heads)
-  return probs
-
-n = 10000
-\end{python}
-
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex20a}
 \end{center}
@@ -689,34 +540,6 @@ n = 10000
 \end{align*}
 
 Empirical simulation:
-
-\begin{python}
-def coinselect():
-  coin = random.randint(1,5)
-  return coin
-
-def coinprob(i, k):
-  coinface = ['H', 'T']
-  headsprob=[0, 0.25, 0.5, 0.75, 1]
-  randomFace = choice( 
-    coinface, k, p=[headsprob[i-1], 1-headsprob[i-1]])
-  return randomFace.tolist(), i
-
-def iteration(n):
-  sample, probs = [], []
-  for i in range(1,n):
-    sample.append(coinprob(coinselect(), k))
-  firsttossheads = len(
-    [i for i in sample if ['H', 'H'] in i or ['H', 'T'] in i])
-  for i in range(1,6):
-    probs.append(sample.count((['H','H'],i)) / firsttossheads)
-  return sum(probs)
-
-n, k, probs = 10000, 2, []
-
-for i in range(10,n+1):
-  probs.append(iteration(n))
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex20b}
@@ -734,32 +557,6 @@ for i in range(10,n+1):
 
 Empirical simulation:
 
-\begin{python}
-def coinselect():
-  coin = random.randint(1,5)
-  return coin
-
-def coinprob(i, k): 
-  coinface = ['H', 'T']
-  headsprob=[0, 0.25, 0.5, 0.75, 1]
-  randomFace = choice(  
-    coinface, k, p=[headsprob[i-1], 1-headsprob[i-1]])
-  return randomFace.tolist(), i
-
-def iteration(n):
-  sample, probs = [], []
-  for i in range(1,n):
-    sample.append(coinprob(coinselect(),k))
-  threetails = len([i for i in sample if ['T', 'T', 'T', 'H'] in i])
-  for i in range(1,6):
-    probs.append(
-      (i, sample.count((['T', 'T', 'T', 'H'],i)) / threetails)) 
-  return probs
-
-n, k = 100000, 4
-iteration(n)
-\end{python}
-
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex20c}
 \end{center}
@@ -769,53 +566,9 @@ iteration(n)
 
 As intuitively anticipated, for large \(n\), the probability of heads tends towards \(0.3\) or \(0.03\).
 
-\begin{python}
-def cointoss():
-    coinface = ['H', 'T']
-    randomFace = choice(  
-    	coinface, 1, p=[0.3, 0.7])
-    return randomFace.tolist()[0]
-
-def iteration(n):
-    prob = []
-    for i in range(1,n+1):
-        prob.append(cointoss())
-    return prob
-
-def trials(n):
-    prob = []
-    for i in range(1,n+1):
-        prob.append(iteration(i).count('H')/i)
-    return prob
-
-n = 1000
-\end{python}
-
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex21i.eps}
 \end{center}
-
-\begin{python}
-def cointoss():
-    coinface = ['H', 'T']
-    randomFace = choice(  
-        coinface, 1, p=[0.03, 0.97])
-    return randomFace.tolist()[0]
-
-def iteration(n):
-    prob = []
-    for i in range(1,n+1):
-        prob.append(cointoss())
-    return prob
-
-def trials(n):
-    prob = []
-    for i in range(1,n+1):
-        prob.append(iteration(i).count('H')/i)
-    return prob
-
-n = 1000	
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap1/chap1ex21ii.eps}
@@ -824,93 +577,11 @@ n = 1000
 % QUESTION 22
 \qs{1.10.22}{\textsf{(Computer Experiment.)} Suppose we flip a coin \(n\) times and let \(p\) denote the probability of heads. Let \(X\) be the number of heads. We call \(X\) a binomial random variable, which is discussed in the next chapter. Intuition suggests that \(X\) will be close to \(np\). To see if this is true, we can repeat this experiment many times and average the \(X\) values. Carry out a simulation and compare the average of the \(X\)'s to \(np\). Try this for \(p = .3\) and \(n = 10, n = 100\), and \(n = 1,000\).}
 
-We run 1,000 trials for 10, 100, and 1,000 flips. The average number of heads for each number of flips are 2.996, 29.958, and 299.92, compared to \(np =\) 3, 30, and 300.
-
-\begin{python}
-from statistics import mean
-
-def cointoss():
-    coinface = ['H', 'T']
-    randomFace = choice(  
-        coinface, 1, p=[0.3, 0.7])
-    return randomFace.tolist()[0]  
-
-def trials(n, k):
-    trials = []
-    for j in range(1,k+1):
-        probs = []
-        for i in range(1,n+1):
-            probs.append(cointoss())
-        trialcount = probs.count('H')
-        trials.append(trialcount)
-    return trials
-
-p, n1, n2, n3, k = 0.3, 10, 100, 1000, 1000 
-print("Running an experiment of", n1, "flips over", k, 
-	"trials, we average", mean(trials(n1,k)), 
-	"heads, compared to np =", n1*p)
-print("Running an experiment of", n2, "flips over", k, 
-	"trials, we average", mean(trials(n2,k)), 
-	"heads, compared to np =", n2*p)
-print("Running an experiment of", n3, "flips over", k, 
-	"trials, we average", mean(trials(n3,k)), 
-	"heads, compared to np =", n3*p)
-\end{python}
+We run 1,000 trials for 10, 100, and 1,000 flips. The average number of heads for each number of flips are 3.009, 30.13, and 299.746, compared to \(np =\) 3, 30, and 300.
 
 % QUESTION 23
 \qs{1.10.23}{\textsf{(Computer Experiment.)} Here we will get some experience simulating conditional probabilities. Consider tossing a fair die. Let \(A = \{2,4,6 \}\) and \(B = \{1,2,3,4 \} \). Then, \(\Prob(A) = 1/2, \Prob(B) = 2/3\) and \(\Prob(AB) = 1/3\). Since \(\Prob(AB) = \Prob(A)\Prob(B)\), the events \(A\) and \(B\) are independent. Simulate draws from the sample space and verify that \(\widehat{\Prob}(AB) = \widehat{\Prob}(A)\widehat{\Prob}(B)\) where \(\widehat{\Prob}(A)\) is the proportion of times \(A\) occurred in the simulation and similarly for \(\widehat{\Prob}(AB)\) and \(\widehat{\Prob}(B)\). Now find two events \(A\) and \(B\) that are not independent. Compute \(\widehat{\Prob}(A), \widehat{\Prob}(B)\) and \(\widehat{\Prob}(AB)\). Compare the calculated values to their theoretical values. Report your results and interpret. }
 
-\begin{python}
-def dice():
-    return random.randint(1,6)
-
-def rolls(n): 
-    sample = []
-    for i in range(1,n+1):
-        sample.append(dice())
-    return sample
-
-n = 10000
-
-# P(A)
-prob_A = (rolls(n).count(2) + rolls(n).count(4) + rolls(n).count(6))/n
-
-# P(B)
-prob_B = (rolls(n).count(1) + rolls(n).count(2) + rolls(n).count(3) 
-         + rolls(n).count(4))/n
-
-# P(AB)
-prob_AB = (rolls(n).count(2) + rolls(n).count(4))/n
-
-print("P(A)P(B) =", prob_A*prob_B, "and P(AB) =", prob_AB, 
-	". Thus A and B are independent.")
-\end{python}
-
 Now suppose we have $A = B = \{k\}$ where $k$ is any integer $1, \dots, 6$. Then $\mathbb{P}(A) = \mathbb{P}(B) = \mathbb{P}(AB) = 1/6$, but $\mathbb{P}(A)\mathbb{P}(B) = 1/36$. Thus $A$ and $B$ are not independent. In general, we can conclude that any event cannot be independent of itself unless the probability of the event is either 0 or 1.
-
-\begin{python}
-def dice():
-    return random.randint(1,6)
-
-def rolls(n): 
-    sample = []
-    for i in range(1,n+1):
-        sample.append(dice())
-    return sample
-
-n = 10000
-
-# P(A)
-prob_A = rolls(n).count(1)/n
-
-# P(B)
-prob_B = rolls(n).count(1)/n
-
-# P(AB)
-prob_AB = rolls(n).count(1)/n
-
-print("P(A)P(B) =", prob_A*prob_B, "and P(AB) =", prob_AB, 
-	". Thus A and B are not independent.")
-\end{python}
 
 \end{document}

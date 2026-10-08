@@ -16,14 +16,6 @@
 
 Please see the associated GitHub repo for all code and comments to simulations. [LINK HERE]
 
-\begin{python}
-import numpy as np
-from numpy.random import choice
-import random
-import matplotlib.pyplot as plt
-import scienceplots
-\end{python}
-
 % QUESTION 1
 \qs{4.5.1}{Let \(X \sim \Exp\left( \beta  \right)\). Find \(\Prob\left(\abs{X - \mu_{X}} \ge k \sigma_{X}\right)\) for \(k > 1\). Compare this to the bound you get from Chebyshev's inequality.}
 
@@ -115,24 +107,6 @@ ascertaining that Hoeffding is a tighter bound than Chebyshev.
 
 \par (b) Here, we sample numerous values of \(\widehat{p}_{n}\), construct \(C_{n}\) from each value, and determine if \(p \in C_{n}\). 
 
-\begin{python}
-k, n = 1000, 10000
-alpha = 0.05
-eps = np.sqrt((1/(2*n))*np.log(2/alpha))
-p = 0.4
-
-def confinttest(k,n):
-    s = np.random.binomial(1,p,size=(k,n)).mean(axis=1)
-    return (p > s - eps) & (p < s + eps);
-
-def coverage():
-    coverage = []
-    for i in range(1,n+1):
-        count = np.count_nonzero(confinttest(k,i) == True)
-        coverage.append(count / k)
-    return coverage;
-\end{python}
-
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap4/chap4ex4b}
 \end{center}
@@ -140,18 +114,6 @@ def coverage():
 As \(n \rightarrow +\infty\), we see that the coverage asymptotically approaches 1. Intuitively this is sensible. Since \(X_{i} \sim \Bernoulli\left( p \right)\), for large \(n\), \(\widehat{p}_{n} \rightarrow p\) (this is the weak law of large numbers, covered in the next chapter). 
 
 \par (c) The length of \(C_{n}\) is \(2 \epsilon_{n}\), and for the length to be no more than \(0.05\), have \(n \ge 2952\).
-
-\begin{python}
-def intlength(n):
-    epsilons = np.empty(n)
-    for i in range(1,n+1):
-        epsilon = np.sqrt((1/(2*i))*np.log(2/alpha))
-        epsilons[i-1] = 2*epsilon
-    return epsilons;
-
-n = 5000
-nsolution = np.argwhere(intlength(n) < 0.05).min() + 1
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap4/chap4ex4c.eps}
@@ -197,34 +159,6 @@ Some initial observations to bear in mind:
 \end{itemize}
 
 Running a horse race between the exact two-tail probability and the Markov and Mill bounds, we find:
-
-\begin{python}
-def normtest(t): 
-    normal_dist = norm(0,1)
-    domain = np.arange(0,t+0.01,0.01)
-    probs = np.empty(len(domain))
-    for i, j in zip(domain, range(0, len(domain))):
-        probs[j] = (2*(1-normal_dist.cdf(i)))
-    return probs;
-
-def markov(k, t):
-    domain = np.arange(0.01,t+0.01,0.01)
-    markovs = np.empty(len(domain))
-    exptabszk = np.power(
-    		np.absolute(np.random.normal(0,1,1000)), k).mean()
-    for i, j in zip(domain, range(0, len(domain))):
-        markovs[j] = np.divide(exptabszk, np.power(i,k))
-    return markovs;
-
-def mill(t):
-    domain = np.arange(0.01,t+0.01,0.01)
-    mills = np.empty(len(domain))
-    for i, j in zip(domain, range(0, len(domain))):
-        mills[j] = np.sqrt(2 / math.pi)*(np.exp(-np.square(i)/2)/i)
-    return mills;
-
-t = 5.5
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap4/chap4ex6.eps}

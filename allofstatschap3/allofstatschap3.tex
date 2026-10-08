@@ -16,15 +16,6 @@
 
 Please see the associated GitHub repo for all code and comments to simulations. [LINK HERE]
 
-\begin{python}
-import numpy as np
-from numpy.random import choice
-import random
-import statistics
-import matplotlib.pyplot as plt
-import scienceplots
-\end{python}
-
 % QUESTION 1
 \qs{3.8.1}{Suppose we play a game where we start with \(c\) dollars. On each play of the game you either double or halve your money, with equal probability. What is your expected fortune after \(n\) trials?}
 
@@ -34,29 +25,6 @@ By premise, \(\Prob(X = 2c) = 1/2, \Prob(X = \frac{1}{2}c) = 1/2\). By definitio
 \]
 
 Simulating the money game, we find:
-
-\begin{python}
-def moneygame(c):
-    flip = random.randint(0,1) 
-    if flip == 0:
-        c = 0.5*c
-    else:
-        c = 2*c
-    return c;
-
-c = 1
-n = 5000
-
-def runs(n):
-    expectations = []
-    for j in range(1,n+1):
-        trials = []
-        for i in range(1,j+1):
-            trials.append(moneygame(c))
-        mean = sum(trials)/len(trials)
-        expectations.append(mean)
-    return expectations;
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap3/chap3ex1.eps}
@@ -112,56 +80,11 @@ After \(n\) jumps, assuming independence of each jump,
 
 We can simulate some random walks for \(p = 0.5\):
 
-\begin{python}
-q = 0.5
-
-def randomwalk(q):
-    step = [-1,1]
-    randomStep = choice( 
-        step, 1, p=[q, 1-q])
-    return randomStep.tolist()[0]
-
-def trials(n): 
-    record = []
-    position = 0
-    for i in range(1,n+1):
-        position = position + randomwalk(q)
-        record.append(position)
-    return position, record;
-
-def multiplewalks(k,n):
-    walklist = []
-    for i in range(1,k+1):
-        trials(n)
-        walklist.append(trials(n)[1])
-    return walklist;
-
-k = 5
-n = 10000
-\end{python}
-
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap3/chap3ex4i.eps}
 \end{center}
 
 Empirically simulating the expectation and variance for \(n\) steps also brings us quite close to our derived theoretical values:
-
-\begin{python}
-def trials(n):
-    record = []
-    position = 0
-    for i in range(1,n+1):
-        position = position + randomwalk(q)
-    return position;
-
-n = 10000
-lastposition = []
-for i in range(1, n+1):
-    lastposition.append(trials(n))
-
-e = statistics.mean(lastposition)
-v = statistics.variance(lastposition)
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap3/chap3ex4ii.eps}
@@ -191,35 +114,6 @@ And setting \(t=0\) gives us
 	 & = \frac{1}{p} 
 \end{align*}
 For \(p = 1/2\), \(\E(X) = \frac{1}{1/2} = \boxed{2}\). Simulating gives us the desired expectation:
-
-\begin{python}
-def cointoss(): 
-    tosses, heads = [], 0
-    while (heads < 1):
-        flip = random.randint(0,1)
-        if (flip == 0):
-            tosses.append('Heads')
-            heads = tosses.count('Heads')
-        else:
-            tosses.append('Tails')
-    return len(tosses);
-
-def empirical(n): 
-    numtosses, probs = [], []
-    for i in range(0,n):
-        numtosses.append(cointoss())
-    for x in np.unique(numtosses): 
-        probs.append((x, numtosses.count(x)))
-    return numtosses;
-
-def trials(n): 
-    trials = []
-    for i in range(1,n+1):
-        trials.append(statistics.mean(empirical(i)))
-    return trials;
-
-n = 10000
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap3/chap3ex5.eps}
@@ -303,23 +197,6 @@ Use the fact that the \(X_{i}\)'s are \textsf{IID}.
 
 We can code our functions to generate \(\overline{X}_{n}\) for the \(N(0,1)\) and Cauchy distributions as follows:
 
-\begin{python}
-def normal(n):
-    normalmeans = []
-    for i in range(1,n+1):
-        normalmeans.append(statistics.mean(np.random.normal(0,1,i)))
-    return normalmeans;
-
-def cauchy(n):
-    cauchymeans = []
-    for i in range(1,n+1):
-        cauchymeans.append(
-		statistics.mean(np.random.standard_cauchy(i)))
-    return cauchymeans;
-
-n = 10000
-\end{python}
-
 The simulations yield:
 
 \begin{center}
@@ -360,15 +237,6 @@ and derive
 \]
 
 Simulating, we get
-
-\begin{python}
-n = 10000 
-
-x = np.random.normal(0,1,n) # normal samples
-y = np.exp(x) # exponential transformation
-meany = round(statistics.mean(y),2)
-vary = round(statistics.variance(y),2)
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap3/chap3ex10.eps}
@@ -528,30 +396,7 @@ Let \(X = \beta y\). Then \(dx = \beta dy\). (Use this substitution for \(\E(X^{
 
 The simulation gives us:
 
-\begin{python}
-def coingame():
-    flip = random.randint(0,1) 
-    if flip == 0:
-        x = np.random.uniform(0,1)
-    else:
-        x = np.random.uniform(3,4)
-    return x;
-
-def samples(n):
-    samples = []
-    for i in range(1,n+1):
-        samples.append(coingame())
-    return samples;
-
-n = 100000
-
-exp = round(statistics.mean(samples(n)),3)
-sd = round(np.sqrt(statistics.variance(samples(n))),3)
-print('The expected value is ', exp, ' 
-      and the standard deviation is ', sd)
-\end{python}
-
-The expected value is  \(2.004\)  and the standard deviation is  \(1.528\). The distribution looks like:
+The expected value is  \(2.001\)  and the standard deviation is  \(1.528\). The distribution looks like:
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap3/chap3ex13.eps}

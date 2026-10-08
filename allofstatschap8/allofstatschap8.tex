@@ -21,47 +21,20 @@ We plot the LSAT and GPA data as follows:
 \includegraphics[width=1.0\textwidth]{chap8/chap8ex1i.eps}
 \end{center}
 
-And  calculate the plug-in estimate of the correlation as \(0.7764\). For \(B = 1000\) number of samples, we bootstrap the correlation, which has  standard error \(0.1387\). This gives us for the confidence intervals 
+And  calculate the plug-in estimate of the correlation as \(0.7764\). For \(B = 1000\) number of samples, we bootstrap the correlation, which has  standard error \(0.1263\). This gives us for the confidence intervals 
 
 \renewcommand{\arraystretch}{2}
 \begin{center}
 \begin{tabular}{|c|c|}
 	\hline
-	Normal & \(\left( 0.5045, 1.0482 \right) \) \\
+	Normal & \(\left( 0.5287, 1.0240 \right) \) \\
 	\hline
-	Pivotal & \(\left( 0.5944, 1.1100 \right) \) \\
+	Pivotal & \(\left( 0.5902, 1.0879 \right) \) \\
 	\hline
-	Percentile & \(\left( 0.4428, 0.9583 \right) \) \\
+	Percentile & \(\left( 0.4649, 0.9625 \right) \) \\
 	\hline
 \end{tabular}
 \end{center}
-
-\begin{python}
-est = pearsonr(LSAT, GPA)[0]
-
-b = len(LSAT)
-B = 1000
-
-def bootstrap():
-        bootstrapsamples = []
-        for i in range(0,B):
-            pairsample = choices(list(zip(LSAT,GPA)), k=b) 
-            pairsample_unzip = list(zip(*pairsample))
-            corrbootsample = pearsonr(pairsample_unzip[0], 
-	    		     pairsample_unzip[1])[0]
-            bootstrapsamples.append(corrbootsample)
-        return bootstrapsamples;
-
-sampleboot = bootstrap()
-
-seboot = np.std(sampleboot)
-
-normci = (est - 1.96*seboot, est + 1.96*seboot)
-pivotalci = (2*est - np.quantile(sampleboot, 0.975), 
-	     2*est - np.quantile(sampleboot, 0.025))
-percentileci = (np.quantile(sampleboot, 0.025), 
-		np.quantile(sampleboot, 0.975))
-\end{python}
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{chap8/chap8ex1ii.eps}
